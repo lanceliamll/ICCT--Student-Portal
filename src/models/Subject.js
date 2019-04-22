@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const SubjectSchema = new Schema({
-  student: {
+  user: {
     type: Schema.Types.ObjectId,
-    ref: "students"
+    ref: "users"
   },
   subjectName: {
     type: String,

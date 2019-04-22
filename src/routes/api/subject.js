@@ -1,6 +1,5 @@
 const express = require("express");
 const passport = require("passport");
-const Student = require("../../models/Student");
 const Subject = require("../../models/Subject");
 const router = express.Router();
 
@@ -8,21 +7,25 @@ const validateSubjectInput = require("../../validation/subject");
 
 // GET ALL GRADES BY Subject
 //api/subject/subjects/:subjectName
-router.get("/subjects/:subjectName", (req, res) => {
-  const { subjectName } = req.params;
-  Subject.find({ subjectName })
-    .sort({ date: -1 })
-    .populate("student", ["studentId", "firstName", "lastName"])
-    .then(subjects => {
-      if (!subjects) {
-        res.status(404).json({
-          message: "There are no currently enrolled to this subject! "
-        });
-      }
-      res.json(subjects);
-    })
-    .catch(err => res.status(404).json(err));
-});
+router.get(
+  "/subjects/:subjectName",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { subjectName } = req.params;
+    Subject.find({ subjectName })
+      .sort({ date: -1 })
+      .populate("user", ["schoolId", "firstName", "lastName"])
+      .then(subjects => {
+        if (!subjects) {
+          res.status(404).json({
+            message: "There are no currently enrolled to this subject! "
+          });
+        }
+        res.json(subjects);
+      })
+      .catch(err => res.status(404).json(err));
+  }
+);
 
 //api/subject/enroll/:id
 //Admin will get this route and enroll a student based on the id.
@@ -66,7 +69,7 @@ router.post(
     let { id } = req.params;
 
     let subjectFields = {};
-    subjectFields.student = id;
+    subjectFields.user = id;
 
     const errors = {};
 
