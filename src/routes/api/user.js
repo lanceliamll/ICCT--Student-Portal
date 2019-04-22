@@ -8,6 +8,34 @@ const User = require("../../models/User");
 
 /* Get Routes */
 
+//Get all the subjects that is enrolled to the user
+
+router.get(
+  "/subjects/:id",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    const { id } = req.params;
+
+    User.find({ id })
+      .then(user => {
+        if (!user) {
+          errors.usernotfound = "user not found!";
+          res.status(404).json(errors);
+        }
+        Subject.find({ user: id }).then(subject => {
+          if (!subject) {
+            errors.nouser = "No subject found";
+            res.status(404).json(errors);
+          }
+          res.json(subject);
+        });
+      })
+      .catch(err => {
+        res.status(404).json(err);
+      });
+  }
+);
+
 //Get all the grades of the specific user based on the request user id
 router.get(
   "/grades",
@@ -152,83 +180,48 @@ router.post("/register", async (req, res) => {
   const errors = {};
   const user = await User.findOne({ schoolId });
   const useradmin = await User.find();
-
-  if (user) {
-    res.status(400).json({ message: "Exists" });
-  } else {
-    if (useradmin.length === 0) {
-      const hashedPassword = await bcrypt.hash(password, 12);
-      const newAdmin = new User({
-        schoolId,
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        isAdmin: true
-      });
-      await newAdmin.save().then(newAdmin => {
-        return res.json(newAdmin);
-      });
-      console.log("nice");
+  try {
+    if (user) {
+      res.status(400).json({ message: "Exists" });
     } else {
-      const hashedPassword = await bcrypt.hash(password, 12);
-      const newStudent = new User({
-        schoolId,
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword
-      });
-      await newStudent.save().then(newStudent => {
-        return res.json(newStudent);
-      });
-      console.log("user to");
-      console.log("!nice");
+      if (useradmin.length === 0) {
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const newAdmin = new User({
+          schoolId,
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword,
+          isAdmin: true
+        });
+        await newAdmin.save().then(newAdmin => {
+          return res.json(newAdmin);
+        });
+        console.log("nice");
+      } else {
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const newStudent = new User({
+          schoolId,
+          firstName,
+          lastName,
+          email,
+          password: hashedPassword
+        });
+        await newStudent.save().then(newStudent => {
+          return res.json(newStudent);
+        });
+        console.log("user to");
+        console.log("!nice");
+      }
     }
+  } catch (err) {
+    res.status(400).json(err);
   }
-
-  // User.findOne({ schoolId }).then(user => {
-  //   if (user) {
-  //     res.status(400).json({ message: "Exists" });
-  //   } else {
-  //     User.find()
-  //       .then(user => {
-  //         if (user.length === 0) {
-  //           const hashedPassword = bcrypt.hash(password, 12);
-  //           const newAdmin = new User({
-  //             schoolId,
-  //             firstName,
-  //             lastName,
-  //             email,
-  //             password: hashedPassword,
-  //             isAdmin: true
-  //           });
-  //           newAdmin.save().then(newAdmin => {
-  //             res.json(newAdmin);
-  //           });
-  //           console.log("nice");
-  //         } else {
-  //           const hashedPassword = bcrypt.hash(password, 12);
-  //           const newStudent = new User({
-  //             schoolId,
-  //             firstName,
-  //             lastName,
-  //             email,
-  //             password: hashedPassword
-  //           });
-  //           newStudent.save().then(newStudent => {
-  //             res.json(newStudent);
-  //           });
-  //           console.log("user to");
-  //           console.log("!nice");
-  //         }
-  //       })
-  //       .catch(err => {
-  //         res.status(400).json(err);
-  //       });
-  //   }
-  // });
 });
+
+//get all students based on the section
+
+/* Put Routes */
 
 //Make a user an admin
 //api/user/makeadmin/:id
@@ -248,10 +241,6 @@ router.put(
       });
   }
 );
-
-//get all students based on the section
-
-/* Put Routes */
 
 /* Delete Routes */
 module.exports = router;
