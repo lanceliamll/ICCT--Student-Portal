@@ -1,16 +1,25 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
-import Footer from "./components/layout/Footer";
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
+import Foot from "./components/layout/Foot";
 import Landing from "./components/layout/Landing";
 import Navbar from "./components/layout/Navbar";
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Navbar />
-        <Landing />
-        <Footer />
+      <div>
+        <Router>
+          <Navbar />
+          <Route exact path="/" component={Landing} />
+          <div>
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={Register} />
+          </div>
+          <Foot />
+        </Router>
       </div>
     );
   }
