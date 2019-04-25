@@ -1,0 +1,10 @@
+.login-container {
+  padding-top: 50px;
+  left: 50%;
+  top: 50%;
+  text-align: center;
+}
+
+.login-main {
+  height: 100vh;
+}

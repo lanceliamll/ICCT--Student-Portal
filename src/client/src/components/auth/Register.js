@@ -47,7 +47,7 @@ class Register extends Component {
       <div className="register-main">
         <div className="register-container">
           <h1>Register</h1>
-          <form>
+          <form onSubmit={this.onSubmit}>
             <div>
               <TextField
                 id="outlined-name"
@@ -115,12 +115,7 @@ class Register extends Component {
               />
             </div>
             <div>
-              <Button
-                onClick={this.onSubmit}
-                variant="contained"
-                color="primary"
-                type="submit"
-              >
+              <Button variant="contained" color="primary" type="submit">
                 Register
               </Button>
             </div>
