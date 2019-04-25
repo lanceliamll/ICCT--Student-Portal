@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const keys = require("../../config/keys");
 const User = require("../../models/User");
+const validateRegisterInput = require("../../validation/register");
+const validateLoginInput = require("../../validation/login");
 
 /* Get Routes */
 
@@ -139,8 +141,12 @@ router.get("/", (req, res) => {
 //api/user/login
 
 router.post("/login", async (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
   const { schoolId, password } = req.body;
-  const errors = {};
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
 
   const user = await User.findOne({ schoolId });
 
@@ -176,13 +182,18 @@ router.post("/login", async (req, res) => {
 //Register user
 //api/user/register
 router.post("/register", async (req, res) => {
+  const { errors, isValid } = validateLoginInput(req.body);
   const { schoolId, firstName, lastName, email, password, isAdmin } = req.body;
-  const errors = {};
+
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
   const user = await User.findOne({ schoolId });
   const useradmin = await User.find();
   try {
     if (user) {
-      res.status(400).json({ message: "Exists" });
+      errors.userexists = "User already exists";
+      res.status(400).json(errors);
     } else {
       if (useradmin.length === 0) {
         const hashedPassword = await bcrypt.hash(password, 12);
@@ -197,7 +208,6 @@ router.post("/register", async (req, res) => {
         await newAdmin.save().then(newAdmin => {
           return res.json(newAdmin);
         });
-        console.log("nice");
       } else {
         const hashedPassword = await bcrypt.hash(password, 12);
         const newStudent = new User({
@@ -210,8 +220,6 @@ router.post("/register", async (req, res) => {
         await newStudent.save().then(newStudent => {
           return res.json(newStudent);
         });
-        console.log("user to");
-        console.log("!nice");
       }
     }
   } catch (err) {

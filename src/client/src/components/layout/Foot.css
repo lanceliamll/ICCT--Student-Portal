@@ -1,3 +1,10 @@
-.footer-text {
+.footer-container {
+  height: 30vh;
+  background-color: #3f51b5;
+  color: white;
+}
+
+.footer-container-center {
+  padding-top: 20px;
   text-align: center;
 }

@@ -1,11 +1,53 @@
 .main-container {
-  height: 70vh;
+  height: 92vh;
+  background-image: url("../../static/background.jpg");
+  background-size: cover;
+  background-position: top;
+  position: sticky;
+  opacity: 1px;
 }
 
-.landing-design {
-  margin-top: 20vh;
+.text-decoration {
+  text-decoration: none;
+  color: black;
+}
+.welcome-text {
+  animation-name: moveInRight;
+  animation-duration: 1s;
+  backface-visibility: hidden;
 }
 
-.logo {
-  margin-top: -5vh;
+.welcome-button {
+  animation-name: moveUp;
+  animation-duration: 2s;
+  backface-visibility: hidden;
+}
+
+.center-container {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+@keyframes moveInRight {
+  0% {
+    opacity: 0;
+    transform: translate(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+
+@keyframes moveUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
 }

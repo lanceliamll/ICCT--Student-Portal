@@ -1,0 +1,9 @@
+.register-container {
+  left: 50%;
+  top: 40%;
+  text-align: center;
+}
+
+.register-main {
+  height: 100vh;
+}
