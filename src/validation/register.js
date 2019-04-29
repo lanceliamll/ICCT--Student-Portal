@@ -4,9 +4,9 @@ module.exports = function validateRegisterInput(data) {
   let errors = {};
 
   //If the field is empty
-  let { studentId, firstName, lastName, email, password, password2 } = data;
+  let { schoolId, firstName, lastName, email, password, password2 } = data;
 
-  studentId = !isEmpty(studentId) ? studentId : "";
+  schoolId = !isEmpty(schoolId) ? schoolId : "";
   firstName = !isEmpty(firstName) ? firstName : "";
   lastName = !isEmpty(lastName) ? lastName : "";
   email = !isEmpty(email) ? email : "";
@@ -15,8 +15,8 @@ module.exports = function validateRegisterInput(data) {
 
   //If the field doesnt met the requirements
 
-  if (Validator.isEmpty(studentId)) {
-    errors.studentId = "Student ID field is required.";
+  if (Validator.isEmpty(schoolId)) {
+    errors.schoolId = "Student ID field is required.";
   }
   if (Validator.isEmpty(firstName)) {
     errors.firstName = "First Name field is required.";
@@ -34,8 +34,8 @@ module.exports = function validateRegisterInput(data) {
     errors.password2 = "Passwords must match";
   }
 
-  if (!Validator.isLength(studentId, { min: 8, max: 10 })) {
-    errors.studentId =
+  if (!Validator.isLength(schoolId, { min: 8, max: 10 })) {
+    errors.schoolId =
       "Student ID must be 8 Characters and is Capitalized Properly";
   }
 

@@ -1,4 +1,5 @@
 import { Button, TextField } from "@material-ui/core";
+import axios from "axios";
 import React, { Component } from "react";
 import "./Register.css";
 
@@ -11,7 +12,8 @@ class Register extends Component {
       lastName: "",
       email: "",
       password: "",
-      password2: ""
+      password2: "",
+      errors: {}
     };
   }
 
@@ -39,18 +41,21 @@ class Register extends Component {
       password2
     };
 
-    console.log(newUser);
+    axios
+      .post("/api/user/register", newUser)
+      .then(res => console.log(res.data))
+      .catch(err => this.setState({ errors: err.response.data }));
   };
 
   render() {
+    const { errors } = this.state;
     return (
       <div className="register-main">
         <div className="register-container">
           <h1>Register</h1>
-          <form onSubmit={this.onSubmit}>
+          <form noValidate onSubmit={this.onSubmit}>
             <div>
               <TextField
-                id="outlined-name"
                 label="School ID"
                 margin="normal"
                 variant="outlined"
@@ -58,10 +63,10 @@ class Register extends Component {
                 value={this.state.schoolId}
                 onChange={this.onChange}
               />
+              {errors.schoolId && <p>{errors.schoolId}</p>}
             </div>
             <div>
               <TextField
-                id="outlined-name"
                 label="First Name"
                 margin="normal"
                 variant="outlined"
@@ -69,10 +74,10 @@ class Register extends Component {
                 value={this.state.firstName}
                 onChange={this.onChange}
               />
+              {errors.firstName && <p>{errors.firstName}</p>}
             </div>
             <div>
               <TextField
-                id="outlined-name"
                 label="Last Name"
                 margin="normal"
                 variant="outlined"
@@ -80,39 +85,43 @@ class Register extends Component {
                 value={this.state.lastName}
                 onChange={this.onChange}
               />
+              {errors.lastName && <p>{errors.lastName}</p>}
             </div>
             <div>
               <TextField
-                id="outlined-name"
                 label="Email"
+                type="email"
                 margin="normal"
                 variant="outlined"
                 name="email"
                 value={this.state.email}
                 onChange={this.onChange}
               />
+              {errors.email && <p>{errors.email}</p>}
             </div>
             <div>
               <TextField
-                id="outlined-name"
                 label="Password"
                 margin="normal"
+                type="password"
                 variant="outlined"
                 name="password"
                 value={this.state.password}
                 onChange={this.onChange}
               />
+              {errors.password && <p>{errors.password}</p>}
             </div>
             <div>
               <TextField
-                id="outlined-name"
                 label="Confirm Password"
                 margin="normal"
+                type="password"
                 variant="outlined"
                 name="password2"
                 value={this.state.password2}
                 onChange={this.onChange}
               />
+              {errors.password2 && <p>{errors.password2}</p>}
             </div>
             <div>
               <Button variant="contained" color="primary" type="submit">

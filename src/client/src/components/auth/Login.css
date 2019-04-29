@@ -3,8 +3,9 @@
   left: 50%;
   top: 50%;
   text-align: center;
+  padding-bottom: 10%;
 }
 
 .login-main {
-  height: 100vh;
+  height: 100%;
 }

@@ -182,8 +182,8 @@ router.post("/login", async (req, res) => {
 //Register user
 //api/user/register
 router.post("/register", async (req, res) => {
-  const { errors, isValid } = validateLoginInput(req.body);
-  const { schoolId, firstName, lastName, email, password, isAdmin } = req.body;
+  const { errors, isValid } = validateRegisterInput(req.body);
+  const { schoolId, firstName, lastName, email, password } = req.body;
 
   if (!isValid) {
     return res.status(400).json(errors);
