@@ -1,6 +1,9 @@
 import { Button, TextField } from "@material-ui/core";
-import axios from "axios";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { registerUser } from "../../actions/authenticationActions";
 import "./Register.css";
 
 class Register extends Component {
@@ -15,6 +18,12 @@ class Register extends Component {
       password2: "",
       errors: {}
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
   }
 
   onChange = e => {
@@ -41,10 +50,7 @@ class Register extends Component {
       password2
     };
 
-    axios
-      .post("/api/user/register", newUser)
-      .then(res => console.log(res.data))
-      .catch(err => this.setState({ errors: err.response.data }));
+    this.props.registerUser(newUser, this.props.history);
   };
 
   render() {
@@ -135,4 +141,16 @@ class Register extends Component {
   }
 }
 
-export default Register;
+Register.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  errors: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+  errors: state.errors
+});
+
+export default connect(
+  mapStateToProps,
+  { registerUser }
+)(withRouter(Register));
