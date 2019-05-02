@@ -41,7 +41,7 @@ class Register extends Component {
       password,
       password2
     } = this.state;
-    const newUser = {
+    const registerData = {
       schoolId,
       firstName,
       lastName,
@@ -50,7 +50,7 @@ class Register extends Component {
       password2
     };
 
-    this.props.registerUser(newUser, this.props.history);
+    this.props.registerUser(registerData, this.props.history);
   };
 
   render() {

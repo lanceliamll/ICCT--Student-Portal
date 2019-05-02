@@ -147,36 +147,38 @@ router.post("/login", async (req, res) => {
   if (!isValid) {
     return res.status(400).json(errors);
   }
-
   const user = await User.findOne({ schoolId });
-
-  if (!user) {
-    errors.notexist = "Student doesn't exists";
-    res.status(400).json(errors);
-  }
-
-  const isMatched = await bcrypt.compare(password, user.password);
-  if (!isMatched) {
-    errors.incorrect = "Incorrect Credentials";
-    res.status(400).json(errors);
-  }
-
-  const payload = {
-    id: user.id,
-    schoolId: user.schoolId,
-    email: user.email
-  };
-  await jwt.sign(
-    payload,
-    keys.secretOrKey,
-    { expiresIn: "1hr" },
-    (err, token) => {
-      res.json({
-        message: "Success",
-        token: "Bearer " + token
-      });
+  try {
+    if (!user) {
+      errors.notexist = "Student doesn't exists";
+      res.status(400).json(errors);
     }
-  );
+
+    const isMatched = await bcrypt.compare(password, user.password);
+    if (!isMatched) {
+      errors.incorrect = "Incorrect Credentials";
+      res.status(400).json(errors);
+    }
+
+    const payload = {
+      id: user.id,
+      schoolId: user.schoolId,
+      email: user.email
+    };
+    await jwt.sign(
+      payload,
+      keys.secretOrKey,
+      { expiresIn: "1hr" },
+      (err, token) => {
+        res.json({
+          message: "Success",
+          token: "Bearer " + token
+        });
+      }
+    );
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 //Register user
@@ -222,8 +224,8 @@ router.post("/register", async (req, res) => {
         });
       }
     }
-  } catch (err) {
-    res.status(400).json(err);
+  } catch (error) {
+    res.status(400).json(error);
   }
 });
 

@@ -1,5 +1,8 @@
 import { Button, TextField } from "@material-ui/core";
+import PropTypes from "prop-types";
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { loginUser } from "../../actions/authenticationActions";
 import "./Login.css";
 
 class Login extends Component {
@@ -7,8 +10,19 @@ class Login extends Component {
     super();
     this.state = {
       schoolId: "",
-      password: ""
+      password: "",
+      errors: {}
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.authentication.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
   }
 
   onChange = e => {
@@ -19,15 +33,16 @@ class Login extends Component {
     e.preventDefault();
 
     const { schoolId, password } = this.state;
-    const login = {
+    const loginData = {
       schoolId,
       password
     };
 
-    console.log(login);
+    this.props.loginUser(loginData);
   };
 
   render() {
+    const { errors } = this.state;
     return (
       <div className="login-main">
         <div className="login-container">
@@ -43,9 +58,11 @@ class Login extends Component {
                 value={this.state.schoolId}
                 onChange={this.onChange}
               />
+              {errors.schoolId && <p>{errors.schoolId}</p>}
             </div>
             <div>
               <TextField
+                type="password"
                 id="outlined-name"
                 label="Password"
                 margin="normal"
@@ -54,6 +71,7 @@ class Login extends Component {
                 value={this.state.password}
                 onChange={this.onChange}
               />
+              {errors.password && <p>{errors.password}</p>}
             </div>
             <div>
               <Button variant="contained" color="primary" type="submit">
@@ -67,4 +85,17 @@ class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  errors: PropTypes.object
+};
+
+const mapStateToProps = state => ({
+  errors: state.errors,
+  authentication: state.authentication
+});
+
+export default connect(
+  mapStateToProps,
+  { loginUser }
+)(Login);

@@ -4,17 +4,17 @@ module.exports = function validateLoginInput(data) {
   let errors = {};
 
   //If the field is empty
-  let { studentId, password } = data;
+  let { schoolId, password } = data;
 
-  studentId = !isEmpty(studentId) ? studentId : "";
+  schoolId = !isEmpty(schoolId) ? schoolId : "";
   password = !isEmpty(password) ? password : "";
 
   //If the field doesnt met the requirements
 
-  if (Validator.isEmpty(data.studentId)) {
-    errors.studentId = "Student ID field is required.";
+  if (Validator.isEmpty(schoolId)) {
+    errors.schoolId = "Student ID field is required.";
   }
-  if (Validator.isEmpty(data.password)) {
+  if (Validator.isEmpty(password)) {
     errors.password = "Password field is required.";
   }
 
