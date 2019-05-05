@@ -5,7 +5,9 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { logoutUser } from "../../actions/authenticationActions";
 import icctLogo from "../../static/icct-logo.png";
 import "./Navbar.css";
 
@@ -22,8 +24,64 @@ const styles = {
   }
 };
 class Navbar extends React.Component {
+  //Functions
+  onUserLogout = event => {
+    event.preventDefault();
+    this.props.logoutUser();
+    window.location.href = "/login";
+  };
+
   render() {
+    const { isAuthenticated, user } = this.props.authentication;
     const { classes } = this.props;
+
+    //IsAdminLinks
+    const adminLinks = (
+      <Button color="inherit">
+        <Link className="text-decoration" to="/enroll">
+          Dashboard
+        </Link>
+      </Button>
+    );
+
+    //Authenticated Links
+    const authenticatedLinks = (
+      <div>
+        {user.isAdmin ? adminLinks : null}
+        <Button color="inherit">
+          <Link className="text-decoration" to="/grades">
+            Grades
+          </Link>
+        </Button>
+        <Button color="inherit">
+          <a className="text-decoration" to="" onClick={this.onUserLogout}>
+            Logout
+          </a>
+        </Button>
+      </div>
+    );
+
+    //Guest Links
+    const guestLinks = (
+      <div>
+        <Button color="inherit">
+          <Link className="text-decoration" to="/">
+            Home
+          </Link>
+        </Button>
+        <Button color="inherit">
+          <Link className="text-decoration" to="/register">
+            Register
+          </Link>
+        </Button>
+        <Button color="inherit">
+          <Link className="text-decoration" to="/login">
+            Login
+          </Link>
+        </Button>
+      </div>
+    );
+
     return (
       <div className={classes.root}>
         <AppBar position="static">
@@ -39,21 +97,8 @@ class Navbar extends React.Component {
                 </Link>
               </Button>
             </Typography>
-            <Button color="inherit">
-              <Link className="text-decoration" to="/">
-                Home
-              </Link>
-            </Button>
-            <Button color="inherit">
-              <Link className="text-decoration" to="/register">
-                Register
-              </Link>
-            </Button>
-            <Button color="inherit">
-              <Link className="text-decoration" to="/login">
-                Login
-              </Link>
-            </Button>
+            {/* Navigation Buttons */}
+            {isAuthenticated ? authenticatedLinks : guestLinks}
           </Toolbar>
         </AppBar>
       </div>
@@ -62,7 +107,16 @@ class Navbar extends React.Component {
 }
 
 Navbar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  logoutUser: PropTypes.func.isRequired,
+  authentication: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Navbar);
+const mapStateToprops = state => ({
+  authentication: state.authentication
+});
+
+export default connect(
+  mapStateToprops,
+  { logoutUser }
+)(withStyles(styles)(Navbar));

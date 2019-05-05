@@ -163,7 +163,8 @@ router.post("/login", async (req, res) => {
     const payload = {
       id: user.id,
       schoolId: user.schoolId,
-      email: user.email
+      email: user.email,
+      isAdmin: user.isAdmin
     };
     await jwt.sign(
       payload,
